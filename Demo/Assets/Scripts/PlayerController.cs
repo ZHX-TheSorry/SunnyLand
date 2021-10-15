@@ -38,10 +38,28 @@ public class PlayerController : MonoBehaviour
 
     public Joystick joystick;   //手机操纵杆
     public Button jumpButton;
+
+    [Header("Dash参数")]
+
+    public float dashTime;  //冲刺时长
+    private float dashTimeLeft;
+    public float dashCoolDowm;      //冷却时间
+    public float dashSpeed;
+    private float lastDash=-10f;     //上一次冲刺的时间点
+
+    private bool isDashing;
+
+    [Header("CD的UI组件")]
+    public Image cdImage;
     
     // Update is called once per frame
     void FixedUpdate()  //固定50帧
     {
+        Dash();
+        if (isDashing)
+        {
+            return;     //如果在冲刺过程中，则屏蔽移动指令
+        }
 
         if (!isHurt)        //未受伤时，正常移动；若受伤即isHurt为true则在下面的代码中进行反弹而不调用move
         {
@@ -61,6 +79,18 @@ public class PlayerController : MonoBehaviour
         Jump();   //手机端通过button调用jump，所以这里注释掉
 
         Crouch();
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            if (Time.time >= (lastDash + dashCoolDowm))
+            {
+                ReadyToDash();
+                cdImage.fillAmount = 1.0f;
+            }
+        }
+
+        cdImage.fillAmount -= 1.0f / dashCoolDowm * Time.deltaTime;
+        
     }
 
 
@@ -281,6 +311,41 @@ public class PlayerController : MonoBehaviour
         
     }
 
+
+    void ReadyToDash()
+    {
+        isDashing = true;
+
+        dashTimeLeft = dashTime;
+
+        lastDash = Time.time;
+    }
+
+
+
+    void Dash()
+    {
+        if (isDashing)
+        {
+            if (dashTimeLeft > 0)
+            {
+                rb.velocity = new Vector2(dashSpeed * transform.localScale.x, rb.velocity.y);
+
+                dashTimeLeft -= Time.deltaTime;
+
+                ShadowPool.instance.GetFromPool();
+            }
+            if (dashTimeLeft <= 0)
+            {
+                isDashing = false;
+            }
+        }
+    }
+
+
+
+
+    
 
 
 

@@ -75,6 +75,8 @@
     <Compile Include="Assets\Scripts\GemFeedback.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\FloatingJoystick.cs" />
     <Compile Include="Assets\Scripts\Parallax.cs" />
+    <Compile Include="Assets\Scripts\ShadowSprite.cs" />
+    <Compile Include="Assets\Scripts\ShadowPool.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
